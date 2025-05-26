@@ -1,0 +1,51 @@
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: #333;
+  }
+  
+  /* Buttons */
+  button {
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  button:hover {
+    background-color: #4f46e5;
+    transform: scale(1.05);
+  }
+  
+  /* Input Fields */
+  input[type="text"] {
+    padding: 10px;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 14px;
+  }
+  
+  /* Sections */
+  .section {
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  /* Headings */
+  h1 {
+    font-size: 2.5rem;
+    color: #1e293b;
+  }
+  h2 {
+    font-size: 1.75rem;
+    color: #334155;
+  }
+  
