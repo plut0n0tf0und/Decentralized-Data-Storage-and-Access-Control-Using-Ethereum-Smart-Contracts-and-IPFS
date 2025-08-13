@@ -2,7 +2,7 @@ import lighthouse from '@lighthouse-web3/sdk';
 import CryptoJS from "crypto-js";
 // @ts-ignore
 import { randomBytes } from 'crypto-browserify';
-const API_KEY = '5f86d2eb.b440f07ceab7420cb1fdaf5e8c6828a6'; // 👈 paste your key
+const API_KEY = '56'; // 👈 paste your key
 
   export const uploadFileToLighthouse = async (file, uploaderWallet) => {
     try {
@@ -58,4 +58,5 @@ export const uploadEncryptedFile = async (file, uploaderWallet) => {
     throw err;
   }
 };
+
 
