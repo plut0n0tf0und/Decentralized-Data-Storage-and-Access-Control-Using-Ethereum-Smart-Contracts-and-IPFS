@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import CIDStorage from '../Hardhat/artifacts/contracts/CIDStorage.sol/CIDStorage.json' assert { type: "json" };
 
 const router = express.Router();
-const contractAddress = "0xa8DD954495C9AbaE175d2838f03C5b12BC97aA09"; // <--- Replace with Sepolia address
+const contractAddress = "0xa9"; // <--- Replace with Sepolia address
 
 router.get("/onchain-cids", async (req, res) => {
   try {
@@ -20,3 +20,4 @@ router.get("/onchain-cids", async (req, res) => {
 });
 
 export default router;
+
