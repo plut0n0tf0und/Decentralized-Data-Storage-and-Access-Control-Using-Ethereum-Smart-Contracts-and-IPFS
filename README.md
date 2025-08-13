@@ -1,27 +1,9 @@
-<!doctype html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Decentralized File System – Ethereum (Sepolia) + IPFS (Lighthouse)</title>
-  <style>
-    :root { --bg:#0f1115; --fg:#e7e9ee; --muted:#a6acb8; --card:#151823; --accent:#7aa2f7; }
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-    .container{max-width:960px;margin:0 auto;padding:48px 20px}
-    .title{font-size:32px;line-height:1.2;margin:0 0 6px}
-    .subtitle{color:var(--muted);margin:0 0 28px}
-    .card{background:var(--card);border-radius:16px;padding:24px;margin:18px 0;border:1px solid rgba(255,255,255,.06)}
-    h2{font-size:22px;margin:0 0 12px}
-    h3{font-size:18px;margin:14px 0 8px}
-    ul,ol{margin:10px 0 10px 20px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-    .kbd{display:inline-block;padding:2px 6px;border:1px solid rgba(255,255,255,.18);border-bottom-width:2px;border-radius:6px;background:rgba(255,255,255,.04);font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
-    .small{color:var(--muted);font-size:14px}
-    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
-    .tag{display:inline-block;padding:2px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px;margin-right:6px;color:var(--muted)}
-    .kicker{letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-size:12px;margin-bottom:8px}
-  </style>
 </head>
 <body>
   <main class="container">
