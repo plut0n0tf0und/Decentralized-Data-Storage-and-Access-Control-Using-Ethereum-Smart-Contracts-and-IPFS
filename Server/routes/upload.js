@@ -7,7 +7,7 @@ import FileAccess from '../routes/FileAccess.js'; // Adjust path if needed
 import crypto from 'crypto';
 
 const uploadRoutes = express.Router();
-const API_KEY = '5f86d2eb.b440f07ceab7420cb1fdaf5e8c6828a6';//lightHouse API key
+const API_KEY = '5f8.ba6';//lightHouse API key
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -92,3 +92,4 @@ uploadRoutes.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 export default uploadRoutes;
+
