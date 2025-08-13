@@ -1,168 +1,204 @@
-Decentralized File System on Ethereum and IPFS
-A practical decentralized file management dApp. Users upload files through a web interface, files are stored on IPFS and pinned with Pinata, while file metadata and access rules are managed by an Ethereum smart contract. Wallet interactions are handled via MetaMask.
-
-Summary
-Decentralized storage using IPFS with Pinata pinning
-
-On-chain metadata for integrity, access control, and traceability
-
-Web app for upload, list, download, and soft-delete
-
-Built with Solidity, Hardhat, Ethers.js, and React
-
-Architecture
-Layered design:
-
-Application layer: React web app for authentication and file operations
-
-Network layer: Ethereum testnet (for example, Sepolia) to execute contracts
-
-Storage layer: IPFS to store file content; Pinata for pinning and persistence
-
-Consensus and security layer: Blockchain for immutable state and access rules
-
-High-level flow:
-
-User selects a file in the UI
-
-File is sent to Pinata and receives a CID
-
-The CID and file metadata are registered on-chain
-
-The UI lists files by reading contract state and events
-
-Downloads use IPFS gateways or native IPFS resolution
-
-Features
-Content-addressed file storage on IPFS
-
-Minimal metadata on-chain: name, CID, size, mime type, uploader, timestamps, soft-delete flag
-
-Owner-only removal on-chain; unpin handled off-chain
-
-Wallet connect and transactions via MetaMask
-
-Gas-aware design keeping large data off-chain
-
-Components
-Blockchain and smart contracts: Ethereum for identities, access control, and metadata
-
-IPFS: distributed object storage
-
-Pinata: pinning and file management APIs
-
-MetaMask: account management and transaction signing
-
-Hardhat: compile, test, deploy
-
-Ethers.js: contract interactions
-
-React: front-end application
-
-Prerequisites
-Node.js 18 or newer
-
-A package manager (npm, yarn, or pnpm)
-
-A Pinata account and API credentials or a JWT
-
-MetaMask configured for a test network
-
-Test ETH on the chosen network
-
-Environment Variables
-Create an environment file to store at minimum:
-
-Private key for deployment
-
-RPC URL for the target network
-
-Pinata credentials (API key and secret, or JWT)
-
-Deployed contract address for the web app
-
-Setup
-Install dependencies for the project and the web app
-
-Configure environment variables for Hardhat, Pinata, and the web app
-
-Compile contracts and run tests locally
-
-Deploy the contract to a test network
-
-Start the web app and provide the deployed contract address and Pinata credentials via environment variables
-
-Usage
-Connect MetaMask in the web app
-
-Upload a file; the app pins it to Pinata and obtains a CID
-
-Register the file on-chain with metadata
-
-List and download files from the UI using the stored CID
-
-Soft-delete by marking the file in the contract; unpin off-chain when appropriate
-
-Gas and Cost Notes
-Keep file bytes off-chain to reduce gas
-
-Store only essential metadata on-chain
-
-Prefer events for indexing in off-chain services
-
-Use test networks during development
-
-Security Considerations
-Validate inputs: non-empty CIDs, sane size limits, bounded metadata lengths
-
-Enforce owner-only destructive operations
-
-Treat gateway URLs carefully; consider an allow-listed set
-
-Soft-delete on-chain; perform unpinning via a controlled service or worker
-
-Testing
-Unit tests for registration, duplicate prevention, removal, event emission, and getters
-
-Consider property-based tests for CID formats and boundary conditions
-
-Include negative tests for invalid inputs and unauthorized actions
-
-Project Structure (described)
-Contracts directory for Solidity sources and deployment scripts
-
-Tests directory for unit and integration tests
-
-Web directory for the React application, wallet hook, and Pinata integration helpers
-
-Configuration files for Hardhat and environment management
-
-Roadmap
-Optional shared access lists or role-based sharing
-
-Batch registration and pagination
-
-Off-chain indexer for faster listings
-
-Native IPFS protocol support in the UI where available
-
-Automatic unpin worker upon on-chain soft-delete
-
-Limitations
-Availability depends on pinning; ensure reliable pin policies
-
-Public CIDs are discoverable; encrypt at the client if confidentiality is required
-
-Gas costs vary by network and traffic
-
-License
-This repository is released under an open license compatible with academic and commercial use. Add your preferred license file in the root of the repository.
-
-Acknowledgments
-Ethereum ecosystem and tooling
-
-IPFS protocol and community
-
-Pinata pinning service
-
-Open-source libraries powering the stack
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Decentralized File System – Ethereum (Sepolia) + IPFS (Lighthouse)</title>
+  <style>
+    :root { --bg:#0f1115; --fg:#e7e9ee; --muted:#a6acb8; --card:#151823; --accent:#7aa2f7; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+    .container{max-width:960px;margin:0 auto;padding:48px 20px}
+    .title{font-size:32px;line-height:1.2;margin:0 0 6px}
+    .subtitle{color:var(--muted);margin:0 0 28px}
+    .card{background:var(--card);border-radius:16px;padding:24px;margin:18px 0;border:1px solid rgba(255,255,255,.06)}
+    h2{font-size:22px;margin:0 0 12px}
+    h3{font-size:18px;margin:14px 0 8px}
+    ul,ol{margin:10px 0 10px 20px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .kbd{display:inline-block;padding:2px 6px;border:1px solid rgba(255,255,255,.18);border-bottom-width:2px;border-radius:6px;background:rgba(255,255,255,.04);font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
+    .small{color:var(--muted);font-size:14px}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
+    .tag{display:inline-block;padding:2px 8px;border:1px solid rgba(255,255,255,.15);border-radius:999px;margin-right:6px;color:var(--muted)}
+    .kicker{letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-size:12px;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1 class="title">Decentralized File System</h1>
+      <p class="subtitle">Ethereum (Sepolia) for metadata and access control + IPFS (Lighthouse) for content storage. Wallet interactions via MetaMask. Frontend as a lightweight web application.</p>
+      <div>
+        <span class="tag">Solidity</span>
+        <span class="tag">Hardhat</span>
+        <span class="tag">Ethers.js</span>
+        <span class="tag">React</span>
+        <span class="tag">IPFS</span>
+        <span class="tag">Lighthouse</span>
+        <span class="tag">MetaMask</span>
+        <span class="tag">Sepolia</span>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="kicker">Summary</div>
+      <p>Files are stored on IPFS and pinned using Lighthouse, while a smart contract on the Sepolia network keeps tamper‑evident metadata, ownership, and access rules. The web app lets users connect a wallet, upload files, register metadata on‑chain, list their files, download via IPFS, and soft‑delete when needed.</p>
+      <div class="grid">
+        <div>
+          <h3>Key points</h3>
+          <ul>
+            <li>Content‑addressed storage using IPFS CIDs</li>
+            <li>On‑chain metadata: name, CID, size, type, owner, timestamps, removal flag</li>
+            <li>Owner‑only destructive actions</li>
+            <li>Gas‑aware: large data lives off‑chain</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Layers</h3>
+          <ol>
+            <li>Application: React web app for file operations</li>
+            <li>Network: Ethereum Sepolia for contract execution</li>
+            <li>Storage: IPFS via Lighthouse for persistence</li>
+            <li>Consensus & Security: blockchain for integrity and traceability</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Architecture Flow</h2>
+      <ol>
+        <li>User selects a file in the web app.</li>
+        <li>The app uploads to Lighthouse and receives a CID.</li>
+        <li>The app submits a transaction on Sepolia to register metadata with the CID.</li>
+        <li>The UI queries on‑chain state and events to list user files.</li>
+        <li>Downloads resolve via IPFS gateways or native IPFS.</li>
+      </ol>
+      <p class="small">Note: Soft‑delete on‑chain should be followed by an off‑chain unpin using Lighthouse if you want to free storage.</p>
+    </section>
+
+    <section class="card">
+      <h2>Components</h2>
+      <ul>
+        <li><strong>Smart contracts</strong>: Solidity contracts manage registration, ownership, and removal flags.</li>
+        <li><strong>Ethereum (Sepolia)</strong>: test network for deployment and interaction.</li>
+        <li><strong>IPFS</strong>: distributed content storage identified by CIDs.</li>
+        <li><strong>Lighthouse</strong>: pinning and persistence for IPFS content via API and dashboard.</li>
+        <li><strong>Web app</strong>: React interface for wallet connect, upload, list, and download.</li>
+        <li><strong>Tooling</strong>: Hardhat for compile, test, deploy; Ethers.js for RPC interactions.</li>
+        <li><strong>Wallet</strong>: MetaMask for accounts and transaction signing.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>Node.js 18 or newer and a package manager</li>
+        <li>MetaMask configured for Sepolia</li>
+        <li>A Lighthouse account and API key or JWT</li>
+        <li>Sepolia test ETH for deployment and interaction</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Configuration</h2>
+      <p>Create environment entries for the following values. Store secrets securely and never commit them to version control.</p>
+      <ul>
+        <li>Private key used for Sepolia deployments</li>
+        <li>RPC URL for Sepolia</li>
+        <li>Lighthouse API key or JWT</li>
+        <li>Deployed contract address for the web app</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Setup</h2>
+      <ol>
+        <li>Install project dependencies in the root and in the web application folder.</li>
+        <li>Copy the example environment file and fill in your values for Sepolia and Lighthouse.</li>
+        <li>Compile the contracts and run the test suite locally.</li>
+        <li>Deploy the contracts to Sepolia and note the deployed address.</li>
+        <li>Start the web app and provide the deployed address and Lighthouse credentials.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Usage</h2>
+      <ol>
+        <li>Open the web app and connect MetaMask.</li>
+        <li>Select a file to upload; the app pins it using Lighthouse and obtains a CID.</li>
+        <li>Confirm the transaction that registers the metadata on Sepolia.</li>
+        <li>View your file list and use the CID to download via IPFS.</li>
+        <li>When removing, mark it on‑chain and optionally unpin in Lighthouse.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Security</h2>
+      <ul>
+        <li>Validate inputs: non‑empty CIDs, reasonable size limits, bounded metadata lengths.</li>
+        <li>Restrict destructive actions to the file owner.</li>
+        <li>Use an allow‑listed set of IPFS gateways in the UI if required.</li>
+        <li>For confidentiality, encrypt files client‑side before uploading to IPFS.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Gas and Cost</h2>
+      <ul>
+        <li>Store only pointers and essential metadata on‑chain.</li>
+        <li>Prefer event logs for off‑chain indexing.</li>
+        <li>Keep large data off‑chain to minimize gas costs.</li>
+        <li>Use test networks during development.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Testing</h2>
+      <ul>
+        <li>Cover registration, duplicate prevention, removal, events, and getters.</li>
+        <li>Include negative cases for invalid inputs and unauthorized actions.</li>
+        <li>Consider property‑based tests for CID formats and limits.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Project Structure (described)</h2>
+      <ul>
+        <li>Contracts folder for Solidity sources and deployment scripts</li>
+        <li>Tests folder for unit and integration tests</li>
+        <li>Web folder for the frontend application</li>
+        <li>Configuration files for Hardhat and environment handling</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Roadmap</h2>
+      <ul>
+        <li>Optional shared access lists or roles</li>
+        <li>Batch registration and pagination in listings</li>
+        <li>Off‑chain indexer for faster queries</li>
+        <li>Automated Lighthouse unpin when a file is soft‑deleted on‑chain</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Limitations</h2>
+      <ul>
+        <li>Availability depends on pinning policies; review Lighthouse pin rules</li>
+        <li>Public CIDs are discoverable; use client‑side encryption if needed</li>
+        <li>Gas costs and block times vary with network conditions</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>License</h2>
+      <p>Add a license file at the repository root that fits your distribution needs.</p>
+    </section>
+
+    <footer class="small">
+      <p>Target network: Sepolia. Storage provider: Lighthouse IPFS. Replace placeholders with your actual values before publishing.</p>
+    </footer>
+  </main>
+</body>
+</html>
