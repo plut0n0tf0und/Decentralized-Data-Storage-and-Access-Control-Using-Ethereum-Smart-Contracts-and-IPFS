@@ -9,7 +9,7 @@ import mime from 'mime-types';
 const viewRoutes = express.Router();
 
 const settings = {
-  apiKey: 'VFSUZT8LJcspLmr9Mur_15qU9RVEdJdo',
+  apiKey: 'Vo',
   network: Network.ETH_SEPOLIA,
 };
 const alchemy = new Alchemy(settings);
@@ -157,6 +157,7 @@ const handleGetLogs = async (req, res) => {
 
 viewRoutes.get('/all/logs', handleGetLogs);
 viewRoutes.get('/:cid', handleGetFile);
+
 
 
 export default viewRoutes;
