@@ -204,9 +204,5 @@ Just here to complain? **See yourself out.**
 ---
 
 <p align="center">
-🔥 <strong>WAGMI</strong> | 🖕 <strong>Banks</strong> | 💀 <strong>Send It</strong>
-</p>
-
-<p align="center">
 <sub><sup>Disclaimer: Not financial advice. Not even regular advice. We're probably all going to zero.</sup></sub>
 </p>
