@@ -1,63 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Decentralized File Storage</title>
-</head>
-<body>
+High-Level Architecture Diagram
 
-  <h1>Decentralized Data Storage</h1>
-
-  <!-- Wallet -->
-  <button onclick="connectWallet()">Connect Wallet</button>
-  <p id="wallet"></p>
-
-  <hr>
-
-  <!-- File Upload -->
-  <h3>Upload File to IPFS</h3>
-  <input type="file" id="fileInput" />
-  <button onclick="uploadFile()">Upload</button>
-
-  <p id="status"></p>
-
-  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
-
-  <script>
-    let userAccount;
-
-    async function connectWallet() {
-      if (!window.ethereum) {
-        alert("MetaMask not found");
-        return;
-      }
-
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      userAccount = accounts[0];
-      document.getElementById("wallet").innerText = "Connected: " + userAccount;
-    }
-
-    async function uploadFile() {
-      const file = document.getElementById("fileInput").files[0];
-      if (!file) {
-        alert("Please select a file");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      document.getElementById("status").innerText = "Uploading...";
-
-      const response = await fetch("http://localhost:5000/upload", {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await response.json();
-      document.getElementById("status").innerText =
-        "Uploaded! CID: " + data.cid;
-    }
-  </script>
-
-</body>
-</html>
++--------------------+
+|   User Browser     |
+| (Frontend UI)      |
++---------+----------+
+          |
+          | 1. Wallet connect / file select
+          v
++---------+----------+
+|   Frontend App     |
+| (Client Layer)    |
++---------+----------+
+          |
+          | 2. File upload request
+          v
++---------+----------+
+|   Backend Server   |
+| (Middleware)      |
++---------+----------+
+          |
+          | 3. Pin file
+          v
++---------+----------+
+|  IPFS via          |
+|  Lighthouse        |
++---------+----------+
+          |
+          | 4. CID returned
+          v
++---------+----------+
+| Ethereum Smart     |
+| Contracts          |
+| (Metadata Layer)  |
++--------------------+
