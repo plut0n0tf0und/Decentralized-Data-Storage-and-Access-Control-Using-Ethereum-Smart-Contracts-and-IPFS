@@ -1,0 +1,70 @@
+End-to-End Data Flow (Visual)
+
+User
+ │
+ │ selects file
+ ▼
+Frontend
+ │
+ │ sends file
+ ▼
+Backend Server
+ │
+ │ uploads & pins
+ ▼
+IPFS (Lighthouse)
+ │
+ │ returns CID
+ ▼
+Frontend
+ │
+ │ stores metadata
+ ▼
+Ethereum Smart Contract
+
+
+
+--------------------
+
+Layered Architecture View
++--------------------------------------------------+
+|                  Presentation Layer              |
+|        (Browser, Wallet, User Interaction)       |
++--------------------------------------------------+
+|                  Application Layer               |
+|        (Frontend Logic, State Management)         |
++--------------------------------------------------+
+|                  Service Layer                   |
+|        (Backend, IPFS Pinning, Validation)        |
++--------------------------------------------------+
+|                  Storage Layer                   |
+|     IPFS (Files) + Ethereum (Metadata Only)      |
++--------------------------------------------------+
+
+
+
+----------------------
+
+
+Trust Boundary Diagram
+[ Untrusted Zone ]
+--------------------------------
+Frontend (Browser)
+User Device
+Wallet Interaction
+--------------------------------
+        |
+        v
+[ Semi-Trusted Zone ]
+--------------------------------
+Backend Server
+API Keys
+Upload Handling
+--------------------------------
+        |
+        v
+[ Trustless Zone ]
+--------------------------------
+Ethereum Blockchain
+IPFS Network
+--------------------------------
